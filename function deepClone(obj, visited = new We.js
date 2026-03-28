@@ -1,0 +1,82 @@
+function deepClone(obj, visited = new WeakMap()) {
+  // Примитивы и null
+  if (obj === null || typeof obj !== 'object') return obj;
+
+  // Циклическая ссылка
+  if (visited.has(obj)) return visited.get(obj);
+
+  let clone;
+
+  // Определяем тип объекта
+  const constructor = obj.constructor;
+
+  if (constructor === Object) {
+    clone = {};
+  } else if (constructor === Array) {
+    clone = [];
+  } else if (constructor === Date) {
+    clone = new Date(obj.getTime());
+  } else if (constructor === RegExp) {
+    clone = new RegExp(obj);
+  } else if (constructor === Map) {
+    clone = new Map();
+    visited.set(obj, clone);
+    for (let [key, value] of obj) {
+      clone.set(deepClone(key, visited), deepClone(value, visited));
+    }
+    return clone;
+  } else if (constructor === Set) {
+    clone = new Set();
+    visited.set(obj, clone);
+    for (let value of obj) {
+      clone.add(deepClone(value, visited));
+    }
+    return clone;
+  } else {
+    // Для функций, Symbol, и — создаём объект с тем же прототипом
+    clone = Object.create(Object.getPrototypeOf(obj));
+  }
+
+  visited.set(obj, clone);
+
+  // Копируем обычные свойства (enumerable)
+  for (let key in obj) {
+    if (Object.prototype.hasOwnProperty.call(obj, key)) {
+      clone[key] = deepClone(obj[key], visited);
+    }
+  }
+
+  // Копируем символы
+  const symbols = Object.getOwnPropertySymbols(obj);
+  for (let sym of symbols) {
+    clone[sym] = deepClone(obj[sym], visited);
+  }
+
+  return clone;
+}
+
+// 🧪 Пример использования
+const original = {
+  a: 1,
+  b: {
+    c: 2,
+    d: [3, 4, { e: 5 }]
+  },
+  date: new Date(2025, 0, 1),
+  regex: /hello/gi,
+  map: new Map([['x', 'y']]),
+  set: new Set([1, 2]),
+  fn: function() { return 'works!'; },
+  sym: Symbol('mySymbol')
+};
+
+original.self = original; // циклическая ссылка
+
+const cloned = deepClone(original);
+
+// Проверка
+console.log('cloned.a:', cloned.a); // 1
+console.log('original.a:', original.a); // 1
+cloned.a = 999;
+console.log('after change → original.a:', original.a); 
+console.log('cloned.self === cloned:', cloned.self === cloned); 
