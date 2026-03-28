@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Дом из CSS</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: #ADD8E6;
+      font-family: sans-serif;
+    }
+
+    .house {
+      position: relative;
+      width: 200px;
+      height: 150px;
+      background: #FFD700;
+      border: 3px solid #B8860B;
+      border-radius: 4px;
+      /* Тень под домом */
+      box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Крыша — псевдоэлемент ::before, прикреплённый к верху дома */
+    .house::before {
+      content: "";
+      position: absolute;
+      top: -60px; /* прижимаем к верху */
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 110px solid transparent;
+      border-right: 110px solid transparent;
+      border-bottom: 60px solid #8B4513;
+    }
+
+    /* Дымоход — псевдоэлемент ::after, прикреплён к крыше */
+    .house::after {
+      content: "";
+      position: absolute;
+      top: -85px; /* чуть выше крыши */
+      left: calc(50% + 70px); /* справа от центра */
+      width: 20px;
+      height: 50px;
+      background: #A9A9A9;
+      border: 2px solid #696969;
+      border-radius: 2px;
+    }
+
+    /* Дым — ещё один псевдоэлемент (или отдельный div — здесь сделаем div для простоты) */
+    .smoke {
+      position: absolute;
+      top: -105px;
+      left: calc(50% + 80px);
+      width: 30px;
+      height: 20px;
+      background: rgba(200, 200, 200, 0.8);
+      border-radius: 50%;
+      filter: blur(1px);
+    }
+    .smoke::before {
+      content: "";
+      position: absolute;
+      top: -12px;
+      left: 10px;
+      width: 25px;
+      height: 22px;
+      background: rgba(200, 200, 200, 0.8);
+      border-radius: 50%;
+    }
+
+    /* Окно — круг */
+    .window {
+      position: absolute;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 40px;
+      height: 40px;
+      background: #E0F7FA;
+      border: 3px solid #2F4F4F;
+      border-radius: 50%;
+      box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+    }
+
+    /* Дверь */
+    .door {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 50px;
+      height: 80px;
+      background: #8B4513;
+      border: 2px solid #5D4037;
+      border-radius: 4px 4px 0 0;
+    }
+
+    /* Обёртка для правильного позиционирования всего дома */
+    .container {
+      position: relative;
+      width: 200px;
+      height: 220px; /* дом + крыша + немного места */
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="house">
+      <div class="window"></div>
+      <div class="door"></div>
+    </div>
+    <div class="smoke"></div>
+  </div>
+</body>
+</html>
